@@ -1,24 +1,31 @@
 # interact module
-APIs to interact with an embedded PrivateSky domain in a webview or iframe
-APIs to offer primitives for PrivateSky conversational interfaces
+APIs to interact with an embedded PrivateSky domain in a webview or iframe (child). Another window will act as a parent for one ore more childs.
+These APIs also offer primitives for PrivateSky conversational interfaces in console mode or could be used to implement them on the client side
 
 #Host APIs
-
-#Generic APIs
 
 var interact = require("interact");
 var domainSandboxWebView = interact.connectChild(wnd)
 
-domainSandboxWebView.onRequest(type, callback)
 domainSandboxWebView.sendRequest(type,args,callback)
-domainSandboxWebView.startSwarm(swarmName,ctor, args, callback)
-domainSandboxWebView.get(domainUrlKey, callback)
-domainSandboxWebView.set(domainUrlKey, value, callback)
+domainSandboxWebView.startSwarm(swarmName,ctor, args, callback) //start a swarm inside of the child
+
+domainSandboxWebView.get(domainUrlKey, callback)        // ask the value of a key
+domainSandboxWebView.set(domainUrlKey, value, callback) // set a value for a key
+
+domainSandboxWebView.onRequest(type, callback)  // register callbacks for various type of request comming from child. type could be "getPIN","getNumber","getString","getPassword","getForm" (COMMAND_TYPES fields in index.js)
 
 
-#Console mode APIs
+##Generic APIs and console mode APIs
 
-#Console mode APIs
+$$.interact.say(..args)
+$$.interact.log(..args)
+$$.interact.readPin()
+$$.interact.readPassword()
+$$.interact.readNumber()
+$$.interact.readString()
+$$.interact.readForm()
+$$.interact.response(response, originalRequest)  //used mainly internally to dispatch responses from parent
 
 
 # domainUrlKey concept
@@ -43,20 +50,20 @@ A domainUrlKey is an URL in form:
 
 #reference space
   The aliases space is just in json containing all the names and aliases relevant to the domain.
-    The generic form is like this:
+    The generic example could be:
     {
     uid:domainUniqueUid
     alias:domainAliasValue
     children:{
             alias:value
             uid:value
-            addresses:<list of known replicas as VirtualMQ endpoints>
+            addresses:[list of known replicas as VirtualMQ endpoints]
             ...
         }
     parents:[{
             name:value
             uid:value
-            addresses:<list of known replicas as VirtualMQ endpoints>
+            addresses:[list of known replicas as VirtualMQ endpoints]
             ...
            }]
     csbs:[{
@@ -65,7 +72,7 @@ A domainUrlKey is an URL in form:
             seed:value,
             publicKeys:[values],
             version:integer
-            virtualMQAdresses:<list of adresses>,
+            virtualMQAdresses:[list of adresses],
         }]
     }
 
@@ -81,7 +88,7 @@ A domainUrlKey is an URL in form:
     - dseed - anybody can read data from CSB but can not create a new version (write new content) without signing the HASH of the content with a private key
     - publicKey - an array with publicKeys that should be used to check that the write in the CSB was properly authorised
     - version: signals the current version of the CSB
-    - virtualMQAdresses that could be used to retrive the content of the CSB
+    - virtualMQAdresses that could be used to retrieve the content of the CSB
 
 
 
