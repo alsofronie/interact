@@ -1,12 +1,23 @@
 # interact module
-    APIs to interact with an embedded PrivateSky domain in a webview or iframe (child). Another window will act as a parent for one ore more childs.
+    APIs to interact with an embedded PrivateSky domain in a webview or iframe (child). 
+    The parent window (or app) will act as a parent for one ore more such childrens.
     
-    These APIs also offer primitives for PrivateSky conversational interfaces in console mode or could be used to implement them on the client side
+    These APIs also offer primitives for PrivateSky conversational interfaces in console mode or 
+    could be substituted with other implementations them on the client side
 
-#Host APIs
+#High level APIs
 
     var interact = require("interact");
-    var domainSandboxWebView = interact.connectChild(wnd)
+    interact.initConsoleMode();     // use interact in console applications
+    interact.initWebEmbeddedMode(); // use interact inside of an webview or iframe
+    interact.initCustomMode(template);      // use interact  in other envirniments, with  cusotom implementation for say, log, readPin, etc...
+
+
+#APIs that could be used from a parent window
+
+    var interact = require("interact");
+    var domainSandboxWebView = interact.connectDomain(childWindow); 
+    
     
     domainSandboxWebView.sendRequest(type,args,callback)
     domainSandboxWebView.startSwarm(swarmName,ctor, args, callback) //start a swarm inside of the child
@@ -14,11 +25,12 @@
     domainSandboxWebView.get(domainUrlKey, callback)        // ask the value of a key
     domainSandboxWebView.set(domainUrlKey, value, callback) // set a value for a key
     
-    domainSandboxWebView.onRequest(type, callback)  // register callbacks for various type of request comming from child. type could be "getPIN","getNumber","getString","getPassword","getForm" (COMMAND_TYPES fields in index.js)
+    //With inrequest it is possible to register callbacks for various type of requests comming from the child. 
+    //type could be "getPIN","getNumber","getString","getPassword","getForm" (COMMAND_TYPES fields in index.js)
+    domainSandboxWebView.onRequest(type, callback)  
 
 
-##Generic APIs and console mode APIs
-
+##Generic APIs and console mode APIs used from privateSky code
     $$.interact.say(..args)
     $$.interact.log(..args)
     $$.interact.readPin()
@@ -26,7 +38,13 @@
     $$.interact.readNumber()
     $$.interact.readString()
     $$.interact.readForm()
-    $$.interact.response(response, originalRequest)  //used mainly internally to dispatch responses from parent
+    
+    
+    //response function will be used mainly internally to dispatch responses from the parent
+    $$.interact.response(response, originalRequest)  
+
+
+
 
 
 # domainUrlKey concept
@@ -35,8 +53,9 @@
 
     where:
         psk://  signals the protocol (PrivateSky protocol, like http)
-        PSKDomain  is a method to identify a PrivateSky domain. Like classical internet domains, a PSK domain is like:   subDomain_n...subDomain1.rootDomain
-        space means some sort of name space and could be one of this:
+        PSKDomain  is a method to identify a PrivateSky domain. 
+        Like classical internet domains, a PSK domain is in form:   subDomain_n...subDomain1.rootDomain
+        space means some sort of name space and could be one of these:
             - reference - keeps data about names, aliases and references - it help the implementation of the name resolution between human readable names and technically required adresses
             - blockchain - a key in the blockchain of the domain
             - PDS - a  key in the PDS (Private Data System)

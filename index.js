@@ -158,22 +158,33 @@ module.exports = {
     initWebEmbeddedMode:function(){
         applyTemplate(new WebEmbeddedImplementation());
     },
-    connectChild:function(childWindow){
+    connectDomain:function(childWindow){
+
+        function sendSwarm(swarmName, ctor, args){
+            var msg = buildMessage(COMMAND_TYPES.SWARM,args);
+            msg.swarmName   = swarmName;
+            msg.ctor        = ctor;
+            childWindow.postMessage(msg, "*")
+        }
+
         return {
             onRequest:function(type, callback){
 
             },
-            sendRequest:function(type,args,callback){
-
+            sendRequest:function(type, args,callback){
+                var msg = buildMessage(COMMAND_TYPES.SWARM,args);
+                msg.swarmName   = swarmName;
+                msg.ctor        = ctor;
+                childWindow.postMessage(msg, "*")
             },
-            startSwarm:function(swarmName,ctor, args, callback){
-
+            startSwarm:function(swarmName, ctor, args, callback){
+                sendSwarm(swarmName, ctor, args)
             },
             get:function(domainUrlKey, callback){
-
+                sendSwarm("PDS", "get", [domainUrlKey],callback);
             },
             set:function(domainUrlKey, value, callback){
-
+                sendSwarm("PDS", "get", [domainUrlKey, value],callback);
             }
         }
     },
