@@ -1,5 +1,5 @@
 /*
-Module that exports
+Module that offers APIs to interact with PrivateSky web sandboxes
 
  */
 
@@ -54,8 +54,7 @@ function buildMessage(type,args,options){
 }
 
 function WebEmbeddedImplementation(){ //this works inside of the iframe
-    var targetWindow = window.opener;
-    var myWindow     = window;
+    var targetWindow = window.parent;
 
     var openRequests = [];
 
@@ -65,8 +64,8 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
 
     var self = this;
 
-    window.addEventListener('message', function(msg) {
-
+    window.addEventListener('message', function(event) {
+        var msg = event.data;
         switch(msg.command){
             case COMMAND_TYPES.GET_KEY: {
                 $$.flow.start("pds", "getKey", msg.key, function(err, res){
@@ -129,9 +128,15 @@ function applyTemplate(template){
     }
 }
 
+if(!)
+
 module.exports = {
     initConsoleMode:function(){
         $$.interact.say = function(...args){
+            notImplementd();
+        }
+
+        $$.interact.log = function(...args){
             notImplementd();
         }
 
@@ -158,35 +163,6 @@ module.exports = {
     initWebEmbeddedMode:function(){
         applyTemplate(new WebEmbeddedImplementation());
     },
-    connectDomain:function(childWindow){
-
-        function sendSwarm(swarmName, ctor, args){
-            var msg = buildMessage(COMMAND_TYPES.SWARM,args);
-            msg.swarmName   = swarmName;
-            msg.ctor        = ctor;
-            childWindow.postMessage(msg, "*")
-        }
-
-        return {
-            onRequest:function(type, callback){
-
-            },
-            sendRequest:function(type, args,callback){
-                var msg = buildMessage(COMMAND_TYPES.SWARM,args);
-                msg.swarmName   = swarmName;
-                msg.ctor        = ctor;
-                childWindow.postMessage(msg, "*")
-            },
-            startSwarm:function(swarmName, ctor, args, callback){
-                sendSwarm(swarmName, ctor, args)
-            },
-            get:function(domainUrlKey, callback){
-                sendSwarm("PDS", "get", [domainUrlKey],callback);
-            },
-            set:function(domainUrlKey, value, callback){
-                sendSwarm("PDS", "get", [domainUrlKey, value],callback);
-            }
-        }
-    },
     initCustomMode:applyTemplate
 }
+

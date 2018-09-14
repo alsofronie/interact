@@ -8,9 +8,12 @@
 #High level APIs
 
     var interact = require("interact");
+    
     interact.initConsoleMode();     // use interact in console applications
     interact.initWebEmbeddedMode(); // use interact inside of an webview or iframe
-    interact.initCustomMode(template);      // use interact  in other envirniments, with  cusotom implementation for say, log, readPin, etc...
+    
+    // use interact  in other envirniments, with  cusotom implementation for say, log, readPin, etc...    
+    interact.initCustomMode(template);      
 
 
 #APIs that could be used from a parent window
