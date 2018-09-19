@@ -128,7 +128,7 @@ function applyTemplate(template){
     }
 }
 
-if(!)
+//if(!)
 
 module.exports = {
     initConsoleMode:function(){
