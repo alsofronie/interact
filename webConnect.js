@@ -1,7 +1,6 @@
 /*
 Module that offers APIs to interact with PrivateSky web sandboxes
-
- */
+*/
 
 
 export function connectDomain(childWindow){    //running in parent
@@ -20,7 +19,7 @@ export function connectDomain(childWindow){    //running in parent
             var callback = msg.command;
             callback(null, msg);
         }
-    })
+    });
 
     return {
         onRequest:function(type, callback){

@@ -1,6 +1,5 @@
 /*
 Module that offers APIs to interact with PrivateSky web sandboxes
-
  */
 
 function notImplementd(){
@@ -12,7 +11,7 @@ function notImplementd(){
     }
 }
 
-if (typeof($$.interact) !== "undefined") {
+if (typeof($$.interact) === "undefined") {
     $$.interact = {
         say: notImplementd,
         log: notImplementd,
@@ -128,9 +127,9 @@ function applyTemplate(template){
     }
 }
 
-//if(!)
 
-module.exports = {
+
+const exportInteract = {
     initConsoleMode:function(){
         $$.interact.say = function(...args){
             notImplementd();
@@ -163,6 +162,17 @@ module.exports = {
     initWebEmbeddedMode:function(){
         applyTemplate(new WebEmbeddedImplementation());
     },
-    initCustomMode:applyTemplate
+    initCustomMode:applyTemplate,
+    connectDomain:function () {
+        return new Error("Not implemented yet");
+    }
+};
+
+
+if(typeof module !== "undefined" ){
+    module.exports = exportInteract;
+
 }
+
+export const interact = exportInteract;
 

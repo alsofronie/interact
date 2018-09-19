@@ -1,8 +1,11 @@
-
 require("util");
 require("callflow");
 
-var simpleFlow = $$.callflow.create("testSwarm",{
+import {interact}  from '../../../index.js';
+interact.initWebEmbeddedMode();
+
+
+/*var simpleFlow = $$.callflow.create("testSwarm",{
     start:function(end){
         this.end = end;
         console.log("In 'start'");
@@ -17,26 +20,26 @@ var simpleFlow = $$.callflow.create("testSwarm",{
         this.end();
     }
 });
-console.log("running")
+console.log("running");
 simpleFlow.start(function(){
     //require("callflow");
     console.log("Callback called");
 });
+*/
 
-/*var fs = require("fs");
+
+var fs = require("fs");
 console.log("FS stat:", fs.stat);
 
-
-console.log("Trimit");
+console.log("Sending from child");
 window.parent.postMessage({
-    command:"echo"
-}, "*")
+    command:"fromChildToParent"
+}, "*");
 
 
 window.addEventListener('message', function(msg) {
     console.log("In child", msg.data);
+});
 
-})
 
-*/
 
