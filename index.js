@@ -35,7 +35,13 @@ const COMMAND_TYPES = {
         GET_NMB:"getNumber",
         GET_STR:"getString",
         GET_PSW:"getPassword",
-        GET_FRM:"getForm"
+        GET_FRM:"getForm",
+        MEET_YOUR_CHILD:"meetYourChild",
+        MEET_YOUR_FATHER:"meetYourFather"
+}
+
+function registerParent(){
+
 }
 
 function buildMessage(type,args,options){
@@ -53,6 +59,7 @@ function buildMessage(type,args,options){
 }
 
 function WebEmbeddedImplementation(){ //this works inside of the iframe
+
     var targetWindow = window.parent;
 
     var openRequests = [];
@@ -65,6 +72,7 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
 
     window.addEventListener('message', function(event) {
         var msg = event.data;
+        console.log(msg);
         switch(msg.command){
             case COMMAND_TYPES.GET_KEY: {
                 $$.flow.start("pds", "getKey", msg.key, function(err, res){
@@ -77,13 +85,18 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
                 break;
             }
             case COMMAND_TYPES.SWARM  : {
-                $$.flow.start(msg.swarmType, msg.ctor, msg.args);
+                console.log("SWARM_COMMAND:",msg.swarmName);
+                $$.flow.start(msg.swarmName, msg.ctor, msg.args);
                 break;
             }
             default:deliverCommandResponse(msg);
 
         }
     });
+
+    window.parent.postMessage({
+        command:COMMAND_TYPES.MEET_YOUR_CHILD
+    }, "*");
 
 
     function createAskForInput(type){
@@ -163,8 +176,80 @@ const exportInteract = {
         applyTemplate(new WebEmbeddedImplementation());
     },
     initCustomMode:applyTemplate,
-    connectDomain:function () {
-        return new Error("Not implemented yet");
+    connectDomain:function (childWindow) {
+        var initialized = false;
+        var toBeDispatchedWhenChildIsReady = [];
+
+
+        function childIsReady(){
+            initialized = true;
+            while(toBeDispatchedWhenChildIsReady.length>0){
+                var request = toBeDispatchedWhenChildIsReady.pop();
+                request();
+            }
+        }
+
+        function dispatchToChild(swarmName, ctor, args){
+            childWindow.postMessage({
+                command:COMMAND_TYPES.SWARM,
+                swarmName:swarmName,
+                ctor:ctor,
+                args:args
+            },"*");
+        }
+
+        function dispatchSwarmRequest(swarmName, ctor, args) {
+            if (initialized === true) {
+                dispatchToChild(swarmName, ctor, args);
+            }
+            else {
+                console.log("Child is not ready yet.")
+                var toBeLaterDispatched = function (swarmName, ctor, args) {
+                    return function () {
+                        dispatchToChild(swarmName, ctor, args)
+                    };
+                };
+                toBeDispatchedWhenChildIsReady.push(toBeLaterDispatched(swarmName, ctor, args));
+            }
+
+        }
+
+
+        function establishCommunicationWithChild(msg) {
+
+            if (msg.data.command === COMMAND_TYPES.MEET_YOUR_CHILD) {
+                childIsReady();
+
+                childWindow.postMessage(
+                    {
+                        command: COMMAND_TYPES.MEET_YOUR_FATHER
+                    },
+                    "*"
+                )
+            }
+        }
+
+        childWindow.parent.addEventListener("message", establishCommunicationWithChild);
+
+
+        return {
+            sendRequest: function (type, args, callback) {
+                notImplementd();
+            },
+            startSwarm: function (swarmName, ctor, args, callback) {
+                dispatchSwarmRequest(swarmName, ctor, args);
+            },
+            get: function (domainUrlKey, callback) {
+                notImplementd();
+            },
+            set: function (domainUrlKey, value, callback) {
+                notImplementd();
+            },
+            onRequest: function (type, callback) {
+                notImplementd();
+            }
+        }
+
     }
 };
 
