@@ -90,8 +90,8 @@ export function connectDomain(childWindow){    //running in parent
             onReturn:function(callback){
                 onReturnCallbacks[requestId] = callback;
             },
-            on:function(){
-
+            on:function(phaseName, callback){
+                onRet
             }
         }
     }
