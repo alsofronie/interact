@@ -1,8 +1,8 @@
 require("util");
 require("callflow");
 
-import {interact}  from '../../../index.js';
-interact.initWebEmbeddedMode();
+import initWebEmbeddedMode  from '../../../webInteract.js';
+initWebEmbeddedMode();
 
 var fs = require("fs");
 console.log("FS stat:", fs.stat);
