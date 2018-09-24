@@ -24,6 +24,7 @@ export function connectDomain(childWindow){    //running in parent
 
     var typeMaps = {};
     var onReturnCallbacks = [];
+    var onCallbacks = [];
 
     var initialized = false;
     var toBeDispatchedWhenChildIsReady = [];
@@ -40,13 +41,25 @@ export function connectDomain(childWindow){    //running in parent
     window.addEventListener('message', function(msg) {
         if(msg.source === childWindow){
 
-            if(msg.data.requestId){
-                if(onReturnCallbacks[msg.data.requestId]){
-                    onReturnCallbacks[msg.data.requestId](msg.data);
-                    delete onReturnCallbacks[msg.data.requestId];
+            if(msg.data.meta && msg.data.meta.requestId){
+                if(onReturnCallbacks[msg.data.meta.requestId]){
+                    onReturnCallbacks[msg.data.meta.requestId](null, msg.data);
+                    delete onReturnCallbacks[msg.data.meta.requestId];
+                }
+
+                if(onCallbacks[msg.data.meta.requestId]){
+                    var phaseNameCallbacks = onCallbacks[msg.data.meta.requestId];
+                    phaseNameCallbacks = phaseNameCallbacks.filter(function (phaseNameCallback) {
+                        return phaseNameCallback.phaseName === msg.data.meta.phaseName;
+                    });
+
+
+                    phaseNameCallbacks.forEach(function(phaseNameCallback){
+                        phaseNameCallback.callback(null, msg.data);
+                    })
+
                 }
             }
-
         }
     });
 
@@ -88,10 +101,24 @@ export function connectDomain(childWindow){    //running in parent
 
         return {
             onReturn:function(callback){
+                if(typeof callback != "function"){
+                    throw new Error("The first parameter should be a string and the second parameter should be a function");
+                }
                 onReturnCallbacks[requestId] = callback;
             },
             on:function(phaseName, callback){
-                
+                if(typeof phaseName != "string"  || typeof callback != "function"){
+                    throw new Error("The first parameter should be a string and the second parameter should be a function");
+                }
+
+                if(!onCallbacks[requestId]){
+                    onCallbacks[requestId] = [];
+                }
+                onCallbacks[requestId].push({
+                    callback:callback,
+                    phaseName:phaseName
+                });
+
             }
         }
     }

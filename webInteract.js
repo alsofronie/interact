@@ -61,9 +61,22 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
                 console.log("SWARM_COMMAND:",msg.swarmName);
                 $$.flow.start(msg.swarmName, msg.ctor, msg.args);
                 sendMessageToParent({
-                    requestId:msg.requestId,
+                    meta:{
+                        requestId:msg.requestId,
+                        phaseName:"success"
+                    },
                     message:"From fake swarm"
                 });
+
+                setTimeout(function(){
+                    sendMessageToParent({
+                        meta:{
+                            requestId:msg.requestId,
+                            phaseName:"error"
+                        },
+                        message:"From fake swarm"
+                    });
+                },1000)
                 break;
             }
             default:sendMessageToParent({"error": "Command was not understood", command:msg.command});

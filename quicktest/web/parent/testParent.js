@@ -7,9 +7,22 @@ var domainSandboxWebView = connectDomain(childWindow);
     console.log(data);
 });*/
 
-domainSandboxWebView.startSwarm("testSwarm.js", "start","message","Test",[1,2,3]).onReturn(function(data){
+domainSandboxWebView.startSwarm("testSwarm.js", "start","message","Test",[1,2,3]).onReturn(function(err, data){
     console.log("Returned data:",data);
 });
+
+
+var sandBoxSwarm = domainSandboxWebView.startSwarm("testSwarm.js", "start","message");
+
+sandBoxSwarm.on("success",function(err, data){
+    console.log("Success phase",data);
+});
+
+sandBoxSwarm.on("error",function(err, data){
+    console.log("Error phase",data);
+})
+
+
 
 
 
