@@ -12,4 +12,4 @@ const COMMAND_TYPES = {
     GET_FRM:"getForm",
     MEET_YOUR_CHILD:"meetYourChild"
 };
- export default COMMAND_TYPES;
+module.exports = COMMAND_TYPES;

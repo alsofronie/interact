@@ -1,41 +1,10 @@
-import commandTypes from './util/commandTypes.js';
-
-
-function notImplementd(){
-    try{
-        throw new Error("Function not implemented");
-    } catch(err){
-        console.log(err.stack);
-        throw err;
-    }
-}
-
-if (typeof($$.interact) === "undefined") {
-    $$.interact = {
-        say: notImplementd,
-        log: notImplementd,
-        response: notImplementd,
-        readPin: notImplementd,
-        readPassword: notImplementd,
-        readNumber: notImplementd,
-        readString: notImplementd,
-        readForm: notImplementd
-    };
-}
-
-function applyTemplate(template){
-    for(var v in template){
-        $$.interact[v] = template[v].bind($$.interact);
-    }
-}
-
+const commandTypes = require('./util/commandTypes.js');
 
 function WebEmbeddedImplementation(){ //this works inside of the iframe
 
     var targetWindow = window.parent;
 
     var openRequests = [];
-
 
     function sendMessageToParent (message){
         window.parent.postMessage(message,"*");
@@ -76,7 +45,7 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
                         },
                         message:"From fake swarm"
                     });
-                },1000)
+                },1000);
                 break;
             }
             default:sendMessageToParent({"error": "Command was not understood", command:msg.command});
@@ -124,8 +93,4 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
     this.readForm = createAskForInput(commandTypes.GET_FRM);
 }
 
-const initWebEmbeddedMode  = function(){
-    applyTemplate(new WebEmbeddedImplementation());
-}
-
-export default initWebEmbeddedMode;
+module.exports = new WebEmbeddedImplementation();

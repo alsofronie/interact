@@ -2,7 +2,21 @@
 Module that offers APIs to interact with PrivateSky web sandboxes
 */
 
-import commandTypes from './util/commandTypes.js';
+const commandTypes = {
+    MESSAGE:"message",
+    SAY:"say",
+    LOG:"log",
+    GET_KEY:"getKey",
+    SET_KEY:"setKey",
+    SWARM  :"startSwarm",
+    GET_PIN:"getPIN",
+    GET_NMB:"getNumber",
+    GET_STR:"getString",
+    GET_PSW:"getPassword",
+    GET_FRM:"getForm",
+    MEET_YOUR_CHILD:"meetYourChild"
+};
+
 import uuidv4 from './util/uuid.js';
 
 function buildMessage(type,args,options){
