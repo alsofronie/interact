@@ -5,7 +5,7 @@ const webInteract = require ('interact');
 
 webInteract.initWebEmbeddedMode();
 
-var fs = require("fs");
+const fs = require("fs");
 console.log("FS stat:", fs.stat);
 
 
