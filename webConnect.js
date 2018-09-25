@@ -73,6 +73,8 @@ export function connectDomain(childWindow){    //running in parent
                     })
 
                 }
+            }else{
+                console.log("###request",msg.data);
             }
         }
     });
@@ -115,13 +117,13 @@ export function connectDomain(childWindow){    //running in parent
 
         return {
             onReturn:function(callback){
-                if(typeof callback != "function"){
+                if(typeof callback !== "function"){
                     throw new Error("The first parameter should be a string and the second parameter should be a function");
                 }
                 onReturnCallbacks[requestId] = callback;
             },
             on:function(phaseName, callback){
-                if(typeof phaseName != "string"  || typeof callback != "function"){
+                if(typeof phaseName !== "string"  || typeof callback !== "function"){
                     throw new Error("The first parameter should be a string and the second parameter should be a function");
                 }
 
@@ -153,12 +155,6 @@ export function connectDomain(childWindow){    //running in parent
                 $$.log("Warning: overwriting onRequest for type ", type);
             }
             typeMaps[type] = callback;
-        },
-        sendRequest:function(type, args, callback){
-            var msg = buildMessage(commandTypes.SWARM,args);
-            msg.swarmName   = swarmName;
-            msg.ctor        = ctor;
-            childWindow.postMessage(msg, "*")
         },
         startSwarm:function(swarmName, ctor, ...params){
             return dispatchSwarmRequest(swarmName, ctor, params);

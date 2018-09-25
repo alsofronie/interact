@@ -14,12 +14,4 @@ const exportInteract = {
     initCustomMode:applyTemplate,
 };
 
-
-/*if(typeof module !== "undefined" ){
-    module.exports = exportInteract;
-}
-
-export const interact = exportInteract;
-*/
-
 module.exports = exportInteract;

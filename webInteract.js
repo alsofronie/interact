@@ -12,6 +12,21 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
 
     var self = this;
 
+
+    function buildMessage(type, args,options){
+        var ret = {
+            command:type,
+            args:args
+        }
+
+        if(options){
+            for(var v in options){
+                ret[v] = options[v];
+            }
+        }
+        return ret;
+    }
+
     window.addEventListener('message', function(event) {
         var msg = event.data;
         console.log(msg.command);
@@ -91,6 +106,16 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
     this.readString = createAskForInput(commandTypes.GET_STR);
 
     this.readForm = createAskForInput(commandTypes.GET_FRM);
+
+    this.sendRequest = function(command, args){
+        return function(callback){
+            var request = buildMessage(command, args);
+            targetWindow.postMessage(request, "*");
+            request.callback = callback;
+            openRequests.push(request);
+        }
+
+    }
 }
 
 module.exports = new WebEmbeddedImplementation();
