@@ -1,4 +1,5 @@
 const commandTypes = require('./util/commandTypes.js');
+const uuidv4 = require('./util/uuid.js');
 
 function WebEmbeddedImplementation(){ //this works inside of the iframe
 
@@ -7,7 +8,7 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
     var openRequests = [];
 
     function sendMessageToParent (message){
-        window.parent.postMessage(message,"*");
+        targetWindow.postMessage(message,"*");
     }
 
     var self = this;
@@ -29,7 +30,18 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
 
     window.addEventListener('message', function(event) {
         var msg = event.data;
-        console.log(msg.command);
+
+        if(msg.commandType === "response"){
+
+            let targetedRequest = openRequests.find(function(request){
+                return request.requestId === msg.requestId;
+            });
+            if(targetedRequest){
+                targetedRequest.callback(msg.data);
+            }
+        }
+
+
         switch(msg.command){
             case commandTypes.GET_KEY: {
                 $$.flow.start("pds", "getKey", msg.key, function(err, res){
@@ -68,7 +80,7 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
         }
     });
 
-    window.parent.postMessage({
+    targetWindow.postMessage({
         command:commandTypes.MEET_YOUR_CHILD
     }, "*");
 
@@ -95,7 +107,7 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
 
     this.response = function(response, request){
         targetWindow.postMessage(buildMessage(commandTypes.RESPONSE, request), "*");
-    }
+    };
 
     this.readPin = createAskForInput(commandTypes.GET_PIN);
 
@@ -107,10 +119,17 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
 
     this.readForm = createAskForInput(commandTypes.GET_FRM);
 
-    this.sendRequest = function(command, args){
-        return function(callback){
-            var request = buildMessage(command, args);
-            targetWindow.postMessage(request, "*");
+    this.sendRequest = function(command, ...params){
+        if(typeof params[params.length-1] === "function"){
+            var callback = params.pop();
+        }
+
+        var args = params;
+        var request = buildMessage(command, args);
+        request.requestId = uuidv4();
+        targetWindow.postMessage(request, "*");
+
+        if(callback){
             request.callback = callback;
             openRequests.push(request);
         }

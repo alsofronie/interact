@@ -2,22 +2,8 @@
 Module that offers APIs to interact with PrivateSky web sandboxes
 */
 
-const commandTypes = {
-    MESSAGE:"message",
-    SAY:"say",
-    LOG:"log",
-    GET_KEY:"getKey",
-    SET_KEY:"setKey",
-    SWARM  :"startSwarm",
-    GET_PIN:"getPIN",
-    GET_NMB:"getNumber",
-    GET_STR:"getString",
-    GET_PSW:"getPassword",
-    GET_FRM:"getForm",
-    MEET_YOUR_CHILD:"meetYourChild"
-};
-
-import uuidv4 from './util/uuid.js';
+const commandTypes = require('./util/commandTypes.js');
+const uuidv4 = require('./util/uuid.js');
 
 function buildMessage(type,args,options){
     var ret = {
@@ -34,7 +20,7 @@ function buildMessage(type,args,options){
 }
 
 
-export function connectDomain(childWindow){    //running in parent
+function ConnectDomain(childWindow){    //running in parent
 
     var typeMaps = {};
     var onReturnCallbacks = [];
@@ -53,28 +39,43 @@ export function connectDomain(childWindow){    //running in parent
 
 
     window.addEventListener('message', function(msg) {
-        if(msg.source === childWindow){
 
-            if(msg.data.meta && msg.data.meta.requestId){
-                if(onReturnCallbacks[msg.data.meta.requestId]){
-                    onReturnCallbacks[msg.data.meta.requestId](null, msg.data);
-                    delete onReturnCallbacks[msg.data.meta.requestId];
+        if (msg.source === childWindow) {
+            if (!msg.data.error) {
+
+                if (msg.data.meta && msg.data.meta.requestId) {
+                    if (onReturnCallbacks[msg.data.meta.requestId]) {
+                        onReturnCallbacks[msg.data.meta.requestId](null, msg.data);
+                        delete onReturnCallbacks[msg.data.meta.requestId];
+                    }
+
+                    if (onCallbacks[msg.data.meta.requestId]) {
+                        var phaseNameCallbacks = onCallbacks[msg.data.meta.requestId];
+                        phaseNameCallbacks = phaseNameCallbacks.filter(function (phaseNameCallback) {
+                            return phaseNameCallback.phaseName === msg.data.meta.phaseName;
+                        });
+
+
+                        phaseNameCallbacks.forEach(function (phaseNameCallback) {
+                            phaseNameCallback.callback(null, msg.data);
+                        })
+
+                    }
+                } else {
+                    if (msg.data.command) {
+                        let command = msg.data.command;
+                        if (typeMaps[command]) {
+                            typeMaps[command](function (data) {
+                                childWindow.postMessage({
+                                    commandType: "response",
+                                    command: msg.data.command,
+                                    requestId:msg.data.requestId,
+                                    data: data
+                                }, "*")
+                            });
+                        }
+                    }
                 }
-
-                if(onCallbacks[msg.data.meta.requestId]){
-                    var phaseNameCallbacks = onCallbacks[msg.data.meta.requestId];
-                    phaseNameCallbacks = phaseNameCallbacks.filter(function (phaseNameCallback) {
-                        return phaseNameCallback.phaseName === msg.data.meta.phaseName;
-                    });
-
-
-                    phaseNameCallbacks.forEach(function(phaseNameCallback){
-                        phaseNameCallback.callback(null, msg.data);
-                    })
-
-                }
-            }else{
-                console.log("###request",msg.data);
             }
         }
     });
@@ -148,7 +149,6 @@ export function connectDomain(childWindow){    //running in parent
 
     childWindow.parent.addEventListener("message", establishCommunicationWithChild);
 
-
     return {
         onRequest:function(type, callback){
             if(typeMaps[type]){
@@ -167,3 +167,6 @@ export function connectDomain(childWindow){    //running in parent
         }
     }
 }
+
+
+module.exports  = ConnectDomain;
