@@ -44,18 +44,18 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
 
         switch(msg.command){
             case commandTypes.GET_KEY: {
-                $$.flow.start("pds", "getKey", msg.key, function(err, res){
+                $$.flow.describe("pds", "getKey", msg.key, function(err, res){
                     self.response(res, msg);
                 });
                 break;
             }
             case commandTypes.SET_KEY: {
-                $$.flow.start("pds", "setKey", msg.key);
+                $$.flow.describe("pds", "setKey", msg.key);
                 break;
             }
             case commandTypes.SWARM  : {
                 console.log("SWARM_COMMAND:",msg.swarmName);
-                $$.flow.start(msg.swarmName, msg.ctor, msg.args);
+                $$.flow.describe(msg.swarmName, msg.ctor, msg.args);
                 sendMessageToParent({
                     meta:{
                         requestId:msg.requestId,

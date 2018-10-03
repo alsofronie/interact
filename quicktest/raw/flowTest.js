@@ -1,5 +1,5 @@
 require("callflow");
-var simpleFlow = $$.callflow.create("testSwarm",{
+var simpleFlow = $$.callflow.describe("testSwarm",{
     start:function(end){
         this.end = end;
         console.log("In 'start'");
@@ -15,6 +15,6 @@ var simpleFlow = $$.callflow.create("testSwarm",{
     }
 });
 console.log("running");
-simpleFlow.start(function(){
+simpleflow.describe(function(){
     console.log("Callback called");
 });
