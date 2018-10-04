@@ -13,6 +13,8 @@ const exportInteract = {
         applyTemplate(require('./webInteract'));
     },
     initCustomMode:applyTemplate,
+    newInteractionSpace: require("./swarmInteract"),
+    createMQ:require("./ChildWndMQ").createMQ
 };
 
 module.exports = exportInteract;

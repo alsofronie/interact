@@ -9,14 +9,13 @@ function dispatchEvent(event) {
     } else {
         throw new Error("");
     }
-
 }
 
 
 function ChildWndMQ(channelName, mainWindow) {
     //channel name is
 
-    channelsRegistry[channelName] = childWnd;
+    channelsRegistry[channelName] = mainWindow;
 
     this.produce = function (swarmMsg) {
         swarmMsg.__meta.channelName = channelName;
@@ -41,7 +40,7 @@ function ChildWndMQ(channelName, mainWindow) {
 
 
 module.exports.createMQ = function createMQ(channelName, wnd){
-    return ChildWndMQ(channelName, wnd);
+    return new ChildWndMQ(channelName, wnd);
 }
 
 

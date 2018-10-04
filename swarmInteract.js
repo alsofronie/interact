@@ -26,7 +26,7 @@ function SwarmInteraction(communicationInterface, swarmName, description, ctor, 
         if(v == "onReturn"){
             hasOnReturn = true;
         }
-        this.onSwarm(v, bindInteractPhase(v), v == "onReturn");
+        this.onSwarm(v, bindInteractPhase(v), hasOnReturn);
     }
     if(!hasOnReturn){
         description["onReturn"] = function(err, swarm){
@@ -53,7 +53,8 @@ var abstractInteractionSpace = {
 }
 
 
-$$.newInteractionSpace = function (communicationInterface) {
+$$.newInteractionSpace = function (childWindow, communicationInterface) {
+
     if(!communicationInterface) {
         communicationInterface = abstractInteractionSpace ;
     }
@@ -83,7 +84,6 @@ Example of usage:
                   }
 
     )
-
 
  */
 

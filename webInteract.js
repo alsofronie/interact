@@ -4,7 +4,6 @@ const uuidv4 = require('./util/uuid.js');
 function WebEmbeddedImplementation(){ //this works inside of the iframe
 
     var targetWindow = window.parent;
-
     var openRequests = [];
 
     function sendMessageToParent (message){
@@ -12,7 +11,6 @@ function WebEmbeddedImplementation(){ //this works inside of the iframe
     }
 
     var self = this;
-
 
     function buildMessage(type, args,options){
         var ret = {
