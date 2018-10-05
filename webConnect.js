@@ -97,7 +97,6 @@ function ConnectDomain(childWindow){    //running in parent
             ctor:ctor,
             args:args,
         },"*");
-
     }
 
     function dispatchSwarmRequest(swarmName, ctor,  args) {
