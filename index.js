@@ -14,7 +14,8 @@ const exportInteract = {
     },
     initCustomMode:applyTemplate,
     newInteractionSpace: require("./swarmInteract"),
-    createMQ:require("./ChildWndMQ").createMQ
+    createMQ:require("./ChildWndMQ").createMQ,
+    WebInteractionSpace: require("./lib/webInteractionSpace")
 };
 
 module.exports = exportInteract;

@@ -6,11 +6,13 @@ const childWindow = (document.getElementsByTagName("iframe")[0]).contentWindow;
 
 //$$.remote.newEndPoint("clientAgent", "http://192.168.0.1:8081", "domeniuPrivatesky.subdomeniu1/agent/NumeAgent","cryptoInfo");
 
-const childMq = interact.createMQ(childWindow);
+const childMq = interact.createMQ("webInteraction",childWindow);
 
-const interactionSpace = $$.newInteractionSpace();
+const webInteractionSpace = new interact.WebInteractionSpace(childMq);
 
-interactionSpace.newInteraction("swarmTest.js",{
+const interactionSpace = $$.newInteractionSpace(webInteractionSpace);
+
+interactionSpace.newInteraction("swarmTest.js", {
 
     sayHello:function(){
         this.swarm("clientSaidHello","My name is Rafael");

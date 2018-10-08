@@ -1,9 +1,9 @@
 var channelsRegistry = {}; //keeps callbacks for consumers and windows references for producers
-
+var callbacksRegistry = {};
 
 function dispatchEvent(event) {
     var swarm = event.data;
-    var callback = channelsRegistry[swarm.__meta.channelName];
+    var callback = callbacksRegistry[swarm.meta.channelName];
     if (callback) {
         callback(null, swarm);
     } else {
@@ -18,7 +18,7 @@ function ChildWndMQ(channelName, mainWindow) {
     channelsRegistry[channelName] = mainWindow;
 
     this.produce = function (swarmMsg) {
-        swarmMsg.__meta.channelName = channelName;
+        swarmMsg.meta.channelName = channelName;
         channelsRegistry[channelName].postMessage(swarmMsg, "*");
     }
 
@@ -32,8 +32,8 @@ function ChildWndMQ(channelName, mainWindow) {
             throw new Error("Only one consumer is allowed! " + folder);
         }
 
-        consumer = callback
-        channelsRegistry[channelName] = consumer;
+        consumer = callback;
+        callbacksRegistry[channelName] = consumer;
         mainWindow.addEventListener("message", dispatchEvent);
     }
 }
