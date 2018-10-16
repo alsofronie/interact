@@ -1,24 +1,28 @@
-require("util");
-require("callflow");
-const interact = require('interact');
 
-const childWindow = (document.getElementsByTagName("iframe")[0]).contentWindow;
+setTimeout(function(){
+    var childWindow = document.getElementsByTagName("iframe")[0].contentWindow;
+    require("callflow");
+    require("launcher");
+    var is = require("interact").createWindowInteractionSpace("iframe",childWindow);
 
-//$$.remote.newEndPoint("clientAgent", "http://192.168.0.1:8081", "domeniuPrivatesky.subdomeniu1/agent/NumeAgent","cryptoInfo");
+    is.startSwarm("swarmTest", "start", {foo:"foo", bar:"bar"}).on({
+        step1:function(value){
+            console.log("Interaction step ", value);
+            this.swarm("step2", value);
+        },
+        step3:function(value){
+            console.log("Step3",value);
+            this.swarm("end", value);
+        }
+    });
 
-const childMq = interact.createMQ("webInteraction",childWindow);
 
-const webInteractionSpace = new interact.WebInteractionSpace(childMq);
+},1000);
 
-const interactionSpace = $$.newInteractionSpace(webInteractionSpace);
 
-interactionSpace.newInteraction("swarmTest.js", {
 
-    sayHello:function(){
-        this.swarm("clientSaidHello","My name is Rafael");
-    },
 
-    sayGoodby:function(){
-        this.swarm("clientSaidGoodby","Goodby, see you tomorrow");
-    }
-});
+
+
+
+

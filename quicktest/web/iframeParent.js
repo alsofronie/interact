@@ -1,4 +1,0 @@
-//import interact from 'index';
-
-$$ = {};
-
