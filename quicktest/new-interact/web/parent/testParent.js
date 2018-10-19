@@ -16,6 +16,9 @@ setTimeout(function(){
         step3:function(value){
             console.log("Step3",value);
             this.swarm("end", value);
+        },
+        step4:function (value) {
+            console.log("Final step in parent", value)
         }
     });
 
