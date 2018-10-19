@@ -2,6 +2,9 @@ require("callflow");
 require("launcher");
 
 $$.swarm.describe("swarmTest", {
+    public:{
+        collectedValue:"int"
+    },
     start:function(value){
         this.value = value;
         console.log("Start");
