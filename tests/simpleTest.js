@@ -7,29 +7,29 @@ require("callflow");
 require("launcher");
 
 $$.swarm.describe("swarmTest", {
-    start:function(value){
+    start:function(value, secondValue){
         this.value = value;
         console.log("Start");
-        this.swarm("interaction", "step1", this.value);
+        this.swarm("interaction", "step1", this.value, secondValue);
     },
     step1:"interaction",
-    step2: function(value){
+    step2: function(value, secondValue){
       console.log("Back in step 2");
-      this.swarm("interaction","step3", value);
+      this.swarm("interaction","step3", value, secondValue);
     },
-    end:function(value){
-        console.log("End..", value);
+    end:function(value, secondValue){
+        console.log("End..", value, secondValue);
     }
 });
 
-is.startSwarm("swarmTest", "start", {foo:"foo", bar:"bar"}).on({
-    step1:function(value){
+is.startSwarm("swarmTest", "start", {foo:"foo", bar:"bar"}, 5).on({
+    step1:function(value, secondValue){
         console.log("Interaction step ", value);
-        this.swarm("step2", value);
+        this.swarm("step2", value, secondValue);
     },
-    step3:function(value){
+    step3:function(value, secondValue){
         console.log("Step3",value);
-        this.swarm("end", value);
+        this.swarm("end", value, secondValue);
     }
 });
 
