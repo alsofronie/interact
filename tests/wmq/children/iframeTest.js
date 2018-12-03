@@ -13,7 +13,7 @@ $$.swarm.describe("swarmTest", {
         var is = require("interact").createInteractionSpace();
         is.startSwarm("swarmTest2", "start", value).on({
             auxiliaryStep :function(){
-                //self.swarm("interaction", "step1", "auxiliary");
+                self.swarm("interaction", "step1", "auxiliary");
             }
         });
 
