@@ -1,5 +1,4 @@
 require("callflow");
-require("launcher");
 
 $$.swarm.describe("swarmTest", {
     public:{

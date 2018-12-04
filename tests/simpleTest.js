@@ -3,8 +3,6 @@
 var is = require("../index").createInteractionSpace();
 
 require("../../../builds/devel/pskruntime");
-require("callflow");
-require("launcher");
 
 $$.swarm.describe("swarmTest", {
     start:function(value, secondValue){
