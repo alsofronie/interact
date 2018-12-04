@@ -7,6 +7,15 @@
     <script src="../../../../../builds/devel/pskruntime.js"></script>
     <script src="../../../../../builds/devel/pskclient.js"></script>
 
+
+    <script >
+        console.log("here");
+        $$.requireBundle("psknode");
+        $$.requireBundle("pskclient");
+        require("callflow");
+    </script>
+
+
     <script src="testParent.js" type="module"  crossorigin ></script>
 </head>
 <body>

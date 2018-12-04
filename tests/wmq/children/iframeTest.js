@@ -1,4 +1,3 @@
-require("callflow");
 
 $$.swarm.describe("swarmTest", {
     public:{
@@ -12,6 +11,7 @@ $$.swarm.describe("swarmTest", {
         var is = require("interact").createInteractionSpace();
         is.startSwarm("swarmTest2", "start", value).on({
             auxiliaryStep :function(){
+                console.log("aux step in iframe");
                 self.swarm("interaction", "step1", "auxiliary");
             }
         });
