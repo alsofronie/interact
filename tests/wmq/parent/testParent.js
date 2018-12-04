@@ -1,12 +1,8 @@
-console.log("bau");
 setTimeout(function(){
     var childWindow = document.getElementsByTagName("iframe")[0].contentWindow;
     var is = require("interact").createWindowInteractionSpace("iframe",childWindow);
 
     is.startSwarm("swarmTest", "start", {foo:"foo", bar:"bar"}).on({
-        auxiliaryStep:function(){
-          console.log("Rafa");
-        },
         step1:function(value){
             console.log("Interaction step ", value);
             this.collectedValue="Super";
