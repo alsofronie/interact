@@ -3,12 +3,34 @@ Module that offers APIs to interact with PrivateSky web sandboxes
  */
 
 
-const exportInteract = {
-    createInteractionSpace: require("./lib/interactionSpace").createInteractionSpace,
-    createWindowInteractionSpace: require("./lib/WMQInteractionSpace").createInteractionSpace,
-    createWindowMQ:require("./lib/ChildWndMQ").createMQ,
-    createWMQInteractionSpace: require("./lib/virtualMQInteractionSpace"),
-    createRemoteInteractionSpace: require('./lib/remoteInteractionSpace').createRemoteInteractionSpace
+const exportBrowserInteract = {
+    enableWebViewInteractions: function () {
+        module.exports.createWindowMQ = require("./lib/ChildWndMQ").createMQ;
+        module.exports.createWindowInteractionSpace = require("./lib/WMQInteractionSpace").createInteractionSpace;
+    },
+
+    enableReactInteractions: function () {
+        module.exports.createWindowInteractionSpace = require("./lib/WMQInteractionSpace").createInteractionSpace;
+        module.exports.createWindowMQ = require("./lib/ChildWndMQ").createMQ;
+
+    },
+    enableLocalInteractions: function () {
+        module.exports.createInteractionSpace = require("./lib/interactionSpace").createInteractionSpace;
+    },
+    enableRemoteInteractions: function () {
+        module.exports.createRemoteInteractionSpace = require('./lib/remoteInteractionSpace').createRemoteInteractionSpace;
+    }
 };
 
-module.exports = exportInteract;
+
+if (typeof(navigator) !== "undefined") {
+    module.exports = exportBrowserInteract;
+
+}
+else {
+    module.exports = {
+        createInteractionSpace: require("./lib/interactionSpace").createInteractionSpace,
+        createRemoteInteractionSpace: require('./lib/remoteInteractionSpace').createRemoteInteractionSpace
+    }
+}
+
