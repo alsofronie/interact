@@ -1,6 +1,8 @@
 setTimeout(function(){
     var childWindow = document.getElementsByTagName("iframe")[0].contentWindow;
-    var is = require("interact").createWindowInteractionSpace("iframe",childWindow);
+    var interact = require("interact");
+    interact.enableWebViewInteractions();
+    var is = interact.createWindowInteractionSpace("iframe",childWindow);
 
     is.startSwarm("swarmTest", "start", {foo:"foo", bar:"bar"}).on({
         step1:function(value){

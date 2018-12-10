@@ -8,6 +8,8 @@ $$.swarm.describe("swarmTest", {
         console.log("Start");
         var self = this;
 
+        var interact2 = require("interact");
+        interact2.enableLocalInteractions();
         var is = require("interact").createInteractionSpace();
         is.startSwarm("swarmTest2", "start", value).on({
             auxiliaryStep :function(){
@@ -38,6 +40,7 @@ $$.swarm.describe("swarmTest2", {
 
 
 
-
-var interaction = require("interact").createWindowInteractionSpace("iframe", window);
+var interact = require("interact");
+interact.enableWebViewInteractions();
+var interaction = interact.createWindowInteractionSpace("iframe", window);
 interaction.init();

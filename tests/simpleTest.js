@@ -1,8 +1,8 @@
+require("../../../builds/devel/pskruntime");
+require("../../../builds/devel/consoleTools");
 
 
 var is = require("../index").createInteractionSpace();
-
-require("../../../builds/devel/pskruntime");
 
 $$.swarm.describe("swarmTest", {
     start:function(value, secondValue){
