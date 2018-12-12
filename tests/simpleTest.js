@@ -1,6 +1,6 @@
 require("../../../builds/devel/pskruntime");
 require("../../../builds/devel/consoleTools");
-
+require("callflow");
 
 var is = require("../index").createInteractionSpace();
 
