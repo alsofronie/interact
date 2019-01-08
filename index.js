@@ -4,7 +4,7 @@ Module that offers APIs to interact with PrivateSky web sandboxes
 
 
 const exportBrowserInteract = {
-    enableWebViewInteractions: function () {
+    enableIframeInteractions: function () {
         module.exports.createWindowMQ = require("./lib/ChildWndMQ").createMQ;
         module.exports.createWindowInteractionSpace = require("./lib/WMQInteractionSpace").createInteractionSpace;
     },
@@ -12,7 +12,10 @@ const exportBrowserInteract = {
     enableReactInteractions: function () {
         module.exports.createWindowInteractionSpace = require("./lib/WMQInteractionSpace").createInteractionSpace;
         module.exports.createWindowMQ = require("./lib/ChildWndMQ").createMQ;
-
+    },
+    enableWebViewInteractions:function(){
+        module.exports.createWindowInteractionSpace = require("./lib/WebViewMQInteractionSpace").createInteractionSpace;
+        module.exports.createWindowMQ = require("./lib/ChildWebViewMQ").createMQ;
     },
     enableLocalInteractions: function () {
         module.exports.createInteractionSpace = require("./lib/interactionSpace").createInteractionSpace;
