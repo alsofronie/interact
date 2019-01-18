@@ -32,6 +32,7 @@ if (typeof(navigator) !== "undefined") {
 }
 else {
     module.exports = {
+        createNodeInteractionSpace: require("./lib/nodeInteractionSpace").createInteractionSpace,
         createInteractionSpace: require("./lib/interactionSpace").createInteractionSpace,
         createRemoteInteractionSpace: require('./lib/remoteInteractionSpace').createRemoteInteractionSpace
     }
